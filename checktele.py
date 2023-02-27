@@ -1,414 +1,84 @@
-import random
-import asyncio
-import telethon
-from telethon import events
-from queue import Queue
-import requests
-from telethon.sync import functions
-from user_agent import generate_user_agent
-import requests
-from user_agent import *
-from help import *
+from telethon import Button, events
+import os
+from pytube import YouTube
+from youtube_search import YoutubeSearch
+import json
 from config import *
-from threading import Thread
-
-a = 'qwertyuiopassdfghjklzxcvbnm'
-b = '1234567890'
-e = 'qwertyuiopassdfghjklzxcvbnm1234567890'
-
-banned = []
-isclaim = ["off"]
-isauto = ["off"]
-with open("banned.txt", "r") as f:
-    f = f.read().split()
-    banned.append(f)
-
-que = Queue()
+sedthon.start()
 
 
-def check_user(username):
-    url = "https://t.me/"+str(username)
-    headers = {
-        "User-Agent": generate_user_agent(),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "ar-EG,ar;q=0.9,en-US;q=0.8,en;q=0.7"}
+def downloader(url):
+    yt = YouTube(url)
+    video = yt.streams.filter(only_audio=True)[0]
+    out_file = video.download()
+    base, ext = os.path.splitext(out_file)
+    new_file = base + '.mp3'
+    os.rename(out_file, new_file)
+    return new_file
 
-    response = requests.get(url, headers=headers)
-    if response.text.find('If you have <strong>Telegram</strong>, you can contact <a class="tgme_username_link"') >= 0:
-        return "Available"
-    else:
-        return "Unavailable"
 
-def gen_user(choice):
-    if choice == "1":
-        c = random.choices(a)
-        d = random.choices(b)
-        s = random.choices(e)
-        f = [c[0], "_", d[0], "_", s[0]]
-        username = ''.join(f)
-        if username in banned[0]:
-            c = random.choices(a)
-            d = random.choices(b)
-            s = random.choices(e)
-            f = [c[0], "_", d[0], "_", s[0]]
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "2":
-        c = random.choices(a)
-        d = random.choices(a)
-        s = random.choices(e)
-        f = [c[0], "_", d[0], "_", s[0]]
-        username = ''.join(f)
-        if username in banned[0]:
-            c = random.choices(a)
-            d = random.choices(b)
-            s = random.choices(e)
-            f = [c[0], "_", d[0], "_", s[0]]
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "3":
-        c = random.choices(a)
-        d = random.choices(b)
-        s = random.choices(e)
-        f = [c[0], s[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        username = username+'bot'
-        if username in banned[0]:
-            c = random.choices(a)
-            d = random.choices(b)
-            s = random.choices(e)
-            f = [c[0], s[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-            username = username+'bot'
-        else:
-            pass
-    if choice == "4":
-        c = random.choices(a)
-        d = random.choices(b)
-        s = random.choices(e)
-        f = [c[0], s[0], d[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        username = username+'bot'
-        if username in banned[0]:
-            c = random.choices(a)
-            d = random.choices(b)
-            s = random.choices(e)
-            f = [c[0], s[0], d[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-            username = username+'bot'
-        else:
-            pass
-    if choice == "5":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], d[0], c[0], c[0], c[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], d[0], c[0], c[0], c[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "6":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], d[0], c[0], c[0], d[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], d[0], c[0], c[0], d[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "7":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], c[0], c[0], c[0], c[0], d[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], c[0], c[0], c[0], c[0], d[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "8":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], d[0], c[0], c[0], c[0], d[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], d[0], c[0], c[0], c[0], d[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "9":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], c[0], c[0], c[0], d[0], c[0], c[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], c[0], c[0], c[0], d[0], c[0], c[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "10":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], d[0], "_", c[0], c[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], d[0], "_", c[0], c[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "11":
-        c = d = random.choices(a)
-        d = random.choices(b)
-        f = [c[0], c[0], c[0], c[0], c[0], c[0], c[0], d[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        if username in banned[0]:
-            c = d = random.choices(a)
-            d = random.choices(b)
-            f = [c[0], c[0], c[0], c[0], c[0], c[0], c[0], d[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-        else:
-            pass
-    if choice == "12":
-        c = random.choices(a)
-        d = random.choices(b)
-        s = random.choices(e)
-        f = [c[0], c[0], "_", d[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        username = username+'bot'
-        if username in banned[0]:
-            c = random.choices(a)
-            d = random.choices(b)
-            s = random.choices(e)
-            f = [c[0], c[0], "_", d[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-            username = username+'bot'
-        else:
-            pass
-    if choice == "13":
-        c = random.choices(a)
-        d = random.choices(b)
-        s = random.choices(e)
-        f = [c[0], d[0], c[0]]
-        random.shuffle(f)
-        username = ''.join(f)
-        username = username+'bot'
-        if username in banned[0]:
-            c = random.choices(a)
-            d = random.choices(b)
-            s = random.choices(e)
-            f = [c[0], s[0]]
-            random.shuffle(f)
-            username = ''.join(f)
-            username = username+'bot'
-        else:
-            pass
-    return username
+title = []
+url = []
+user_id = []
 
-@sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.تشيكر"))
+
+@bot.on(events.InlineQuery)
+async def _(query):
+    user_id.append(query.original_update.user_id)
+    keyboard = [
+        [Button.inline(title[0], data="F1")],
+        [Button.inline(title[1], data="F2")],
+        [Button.inline(title[2], data="F3")],
+        [Button.inline(title[3], data="F4")],
+        [Button.inline(title[4], data="F5")]
+    ]
+    res = await query.builder.article('Search', text="نتائج البحث : ", buttons=keyboard)
+    res = await query.answer([res])
+
+
+@bot.on(events.CallbackQuery)
 async def _(event):
-    if ispay2[0] == "yes":
-        await event.edit(tele_checker)
+    j = event.original_update.user_id
+    if j == user_id[0]:
+        data = event.data
+        if data == b'F1':
+            file = downloader(url[0])
+            await sedthon.send_file(event.chat_id, file)
+            os.remove(file)
+        if data == b'F2':
+            file = downloader(url[1])
+            await sedthon.send_file(event.chat_id, file)
+            os.remove(file)
+        if data == b'F3':
+            file = downloader(url[2])
+            await sedthon.send_file(event.chat_id, file)
+            os.remove(file)
+        if data == b'F4':
+            file = downloader(url[3])
+            await sedthon.send_file(event.chat_id, file)
+            os.remove(file)
+        if data == b'F5':
+            file = downloader(url[4])
+            await sedthon.send_file(event.chat_id, file)
+            os.remove(file)
     else:
-        await event.edit("يجب الدفع لاستعمال هذا الامر !")
+        pass
+    title.clear()
+    url.clear()
 
 
-@sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.اليوزرات"))
+@sedthon.on(events.NewMessage(outgoing=True, pattern="\.بحث (.*)"))
 async def _(event):
-    if ispay2[0] == "yes":
-        await sedthon.send_file(event.chat_id, 'banned.txt')
-    else:
-        await event.edit("يجب الدفع لاستعمال هذا الامر !")
-
-
-@sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.الانواع"))
-async def _(event):
-    if ispay2[0] == "yes":
-        await event.edit(tele_checker2)
-    else:
-        await event.edit("يجب الدفع لاستعمال هذا الامر !")
-
-
-# صيد عدد نوع قناة
-
-
-@sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.صيد (.*)"))
-async def _(event):
-    if ispay2[0] == "yes":
-        isclaim.clear()
-        isclaim.append("on")
-        msg = ("".join(event.text.split(maxsplit=1)[1:])).split(" ", 2)
-        ch = str(msg[2])
-        choice = str(msg[1])
-        trys = 0
-        await event.edit(f"Ok I will check  `{choice}` from the user  **{ch}** , by number  **{msg[0]}** of attempts !")
-
-        @sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.حالة الصيد"))
-        async def _(event):
-            if ispay2[0] == "yes":
-                if "on" in isclaim:
-                    await event.edit(f"The examination has arrived **({trys})** of attempts")
-                elif "off" in isclaim:
-                    await event.edit("There is NO working check !")
-                else:
-                    await event.edit("mistake")
-            else:
-                pass
-        for i in range(int(msg[0])):
-            if ispay2[0] == 'no':
-                break
-            username = ""
-
-            username = gen_user(choice)
-            t = Thread(target=lambda q, arg1: q.put(
-                check_user(arg1)), args=(que, username))
-            t.start()
-            t.join()
-            isav = que.get()
-            if "Available" in isav:
-                await asyncio.sleep(1)
-                try:
-                    await sedthon(functions.channels.UpdateUsernameRequest(
-                        channel=ch, username=username))
-                    await event.client.send_message(event.chat_id, f'''
-✪ (@{username}) done... 
-✪ By @TBthon - @W_P_Y
-    ''')
-                    break
-                except telethon.errors.rpcerrorlist.UsernameInvalidError:
-                    with open("banned.txt", "a") as f:
-                        f.write(f"\n{username}")
-                except Exception as eee:
-                    await sedthon.send_message(event.chat_id, f'''error with {username}
-    error :
-    {str(eee)}''')
-                    if "A wait of" in str(eee):
-                        break
-                    else:
-                        await sedthon.send_message(event.chat.id, "سأستمر بلفحص !")
-            else:
-                pass
-            trys += 1
-
-        isclaim.clear()
-        isclaim.append("off")
-        trys = ""
-        await event.client.send_message(event.chat_id, "تم الانتهاء من الفحص")
-    else:
-        await event.edit("يجب الدفع لاستعمال هذا الامر !")
-
-
-@sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.تثبيت (.*)"))
-async def _(event):
-    if ispay2[0] == "yes":
-        trys = 0
-        msg = ("".join(event.text.split(maxsplit=1)[1:])).split(" ", 1)
-        if msg[0] == "تثبيت":  # تثبيت عدد يوزر قناه
-            isauto.clear()
-            isauto.append("on")
-            msg = ("".join(event.text.split(maxsplit=2)[2:])).split(" ", 2)
-            username = str(msg[2])
-            ch = str(msg[1])
-            await event.edit(f"Well I will try to install  **{username}** on **{ch}** , by number  **{msg[0]}** of attempts !")
-
-            @sedthon.on(events.NewMessage(outgoing=True, pattern=r"\.condition Attract"))
-            async def _(event):
-                if "on" in isauto:
-                    msg = await event.edit(f"The installation has arrived ({trys}) of attempts ")
-                elif "off" in isauto:
-                    await event.edit("installation off !")
-                else:
-                    await event.edit("mistake")
-            for i in range(int(msg[0])):
-                if ispay2[0] == 'no':
-                    break
-                t = Thread(target=lambda q, arg1: q.put(
-                    check_user(arg1)), args=(que, username))
-                t.start()
-                t.join()
-                isav = que.get()
-                if "Available" in isav:
-                    try:
-                        await sedthon(functions.channels.UpdateUsernameRequest(
-                            channel=ch, username=username))
-                        await event.client.send_message(event.chat_id, f'''
-✪ (@{username}) done...
-✪ By @TBthon - @W_P_Y
-    ''')
-                        break
-                    except telethon.errors.rpcerrorlist.UsernameInvalidError:
-                        await event.client.send_message(event.chat_id, f"مبند `{username}` ❌❌")
-                        break
-                    except Exception as eee:
-
-                        await sedthon.send_message(event.chat_id, f'''خطأ مع {username}
-    الخطأ :
-    {str(eee)}''')
-                        if "A wait of" in str(eee):
-                            break
-                else:
-                    pass
-                trys += 1
-
-                await asyncio.sleep(8)
-            trys = ""
-            isclaim.clear()
-            isclaim.append("off")
-            await sedthon.send_message(event.chat_id, "تم الانتهاء من التثبيت التلقائي")
-        if msg[0] == "يدوي":  # تثبيت يدوي يوزر قناة
-            await event.edit(f"حسناً سأحاول تثبيت `{username}` على `{ch}` !")
-            msg = ("".join(event.text.split(maxsplit=1)[1:])).split(" ", 1)
-            username = str(msg[0])
-            ch = str(msg[1])
-            try:
-                await sedthon(functions.channels.UpdateUsernameRequest(
-                    channel=ch, username=username))
-                await event.client.send_message(event.chat_id, f'''
-✪ (@{username}) The catch was done 
-✪ By @TBthon - @W_P_Y
-    ''')
-            except telethon.errors.rpcerrorlist.UsernameInvalidError:
-                await event.client.send_message(event.chat_id, f"مبند `{username}` ❌❌")
-            except Exception as eee:
-                await sedthon.send_message(event.chat_id, f'''خطأ مع {username}
-    الخطأ :
-    {str(eee)}''')
-
-    else:
-        await event.edit("يجب الدفع لاستعمال هذا الامر !")
+    msg = ("".join(event.text.split(maxsplit=1)[1:])).split(" ", 0)
+    name = str(msg[0])
+    results = YoutubeSearch(name, max_results=5).to_json()
+    results_dict = json.loads(results)
+    title.clear()
+    url.clear()
+    user_id.clear()
+    for v in results_dict['videos']:
+        title.append(str(v['title']))
+        url.append(f'https://www.youtube.com' + v['url_suffix'])
+    res = await sedthon.inline_query(f"@{BOT_USERNAME}", 'search')
+    await res[0].click(event.chat_id)
+    await event.delete()
